@@ -1,5 +1,3 @@
-# File path: course_recommendation_system.py
-
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
@@ -10,9 +8,9 @@ def load_course_data(filepath):
 
 # Preprocess the course data
 def preprocess_courses(courses):
-    courses['description'] = courses['description'].fillna('')
+    courses['Description'] = courses['Description'].fillna('')
     tfidf = TfidfVectorizer(stop_words='english')
-    tfidf_matrix = tfidf.fit_transform(courses['description'])
+    tfidf_matrix = tfidf.fit_transform(courses['Description'])
     return tfidf, tfidf_matrix
 
 # Build content-based filtering model
@@ -33,7 +31,7 @@ def get_content_based_recommendations(field_of_interest, courses, tfidf, tfidf_m
     similar_courses = courses.iloc[similar_indices]
     
     # Filter courses based on relevance to the user's field of interest
-    relevant_courses = similar_courses[similar_courses.apply(lambda row: field_of_interest.lower() in row['title'].lower() or field_of_interest.lower() in row['description'].lower(), axis=1)]
+    relevant_courses = similar_courses[similar_courses.apply(lambda row: field_of_interest.lower() in row['Title'].lower() or field_of_interest.lower() in row['Description'].lower(), axis=1)]
     
     return relevant_courses
 
@@ -53,7 +51,7 @@ def main():
         content_recommendations = get_content_based_recommendations(user_input, courses, tfidf, tfidf_matrix)
         if not content_recommendations.empty:
             print("\nContent-Based Recommendations:")
-            print(content_recommendations[['title', 'description']].to_string(index=False))
+            print(content_recommendations[['Title', 'Description']].to_string(index=False))
         else:
             print("No courses found for the given field of interest.")
         
