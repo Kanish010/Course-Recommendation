@@ -11,9 +11,9 @@ def load_course_data(filepath):
 
 # Preprocess the course data
 def preprocess_courses(courses):
-    courses['Description'] = courses['Description'].fillna('')
+    courses['description'] = courses['description'].fillna('')
     tfidf = TfidfVectorizer(stop_words='english')
-    tfidf_matrix = tfidf.fit_transform(courses['Description'])
+    tfidf_matrix = tfidf.fit_transform(courses['description'])
     return tfidf, tfidf_matrix
 
 # Get content-based recommendations
@@ -29,7 +29,7 @@ def get_content_based_recommendations(field_of_interest, courses, tfidf, tfidf_m
     similar_courses = courses.iloc[similar_indices]
     
     # Filter courses based on relevance to the user's field of interest
-    relevant_courses = similar_courses[similar_courses.apply(lambda row: field_of_interest.lower() in row['Title'].lower() or field_of_interest.lower() in row['Description'].lower(), axis=1)]
+    relevant_courses = similar_courses[similar_courses.apply(lambda row: field_of_interest.lower() in row['title'].lower() or field_of_interest.lower() in row['description'].lower(), axis=1)]
     
     return relevant_courses
 
@@ -50,7 +50,7 @@ def recommend():
     content_recommendations = get_content_based_recommendations(field_of_interest, courses, tfidf, tfidf_matrix)
     
     if not content_recommendations.empty:
-        return render_template('index.html', recommendations=content_recommendations[['Title', 'Description']].to_dict(orient='records'))
+        return render_template('index.html', recommendations=content_recommendations[['title', 'description']].to_dict(orient='records'))
     else:
         return render_template('index.html', error="No courses found for the given field of interest")
 
