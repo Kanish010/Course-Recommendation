@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Recommendation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 300px;
+            padding: 8px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 8px 12px;
+        }
+        .error {
+            color: red;
+            margin-top: 20px;
+        }
+        .recommendations {
+            margin-top: 20px;
+        }
+        .recommendation-item {
+            margin-bottom: 15px;
+        }
+        .recommendation-title {
+            font-weight: bold;
+        }
+        .recommendation-description {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Course Recommendation System</h1>
+    <form action="/recommend" method="post">
+        <label for="field_of_interest">Enter your field of interest:</label>
+        <input type="text" id="field_of_interest" name="field_of_interest" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if recommendations %}
+    <div class="recommendations">
+        <h2>Recommended Courses:</h2>
+        {% for course in recommendations %}
+        <div class="recommendation-item">
+            <div class="recommendation-title">{{ course.title }}</div>
+            <div class="recommendation-description">{{ course.description }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</body>
+</html>

@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
@@ -37,18 +37,22 @@ def get_content_based_recommendations(field_of_interest, courses, tfidf, tfidf_m
 courses = load_course_data('courses.xlsx')
 tfidf, tfidf_matrix = preprocess_courses(courses)
 
-@app.route('/recommend', methods=['GET'])
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/recommend', methods=['POST'])
 def recommend():
-    field_of_interest = request.args.get('field_of_interest')
+    field_of_interest = request.form.get('field_of_interest')
     if not field_of_interest:
-        return jsonify({'error': 'field_of_interest parameter is required'}), 400
+        return render_template('index.html', error="Field of interest is required")
     
     content_recommendations = get_content_based_recommendations(field_of_interest, courses, tfidf, tfidf_matrix)
     
     if not content_recommendations.empty:
-        return jsonify(content_recommendations[['Title', 'Description']].to_dict(orient='records'))
+        return render_template('index.html', recommendations=content_recommendations[['Title', 'Description']].to_dict(orient='records'))
     else:
-        return jsonify({'message': 'No courses found for the given field of interest'})
+        return render_template('index.html', error="No courses found for the given field of interest")
 
 if __name__ == '__main__':
     app.run(debug=True)
