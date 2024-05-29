@@ -11,16 +11,25 @@
             font-family: 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background: white;
             overflow: hidden;
-            background: #2a2a2a;
         }
 
-        #particles-js {
+        .logo-container {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            background: #2a2a2a;
-            z-index: -1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(-50%, -50%) translateY(-10px);
+            }
+            50% {
+                transform: translate(-50%, -50%) translateY(10px);
+            }
         }
 
         .container {
@@ -55,11 +64,12 @@
         .recommendation-title {
             font-weight: bold;
             font-size: 1.2em;
-            color: #ff6f61;
+            color: #ff6f61; /* Add your desired color here */
         }
 
         .recommendation-description {
             margin-top: 10px;
+            color: #333; /* Add your desired color here */
         }
 
         .btn-primary {
@@ -73,7 +83,9 @@
     </style>
 </head>
 <body>
-    <div id="particles-js"></div>
+    <div class="logo-container">
+        <img src="{{ url_for('static', filename='img/ubc-logo.png') }}" alt="UBC Logo" width="150">
+    </div>
     <div class="container">
         <h1>Course Recommendation System</h1>
         <form action="/recommend" method="post">
@@ -101,10 +113,6 @@
         {% endif %}
     </div>
 
-    <!-- Particles.js library -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <!-- Particles.js config -->
-    <script src="{{ url_for('static', filename='particles-config.js') }}"></script>
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
