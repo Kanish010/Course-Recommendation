@@ -6,6 +6,8 @@ from sklearn.metrics.pairwise import linear_kernel
 app = Flask(__name__)
 
 # Load and preprocess data
+courses = pd.read_excel('courses.xlsx')
+courses['Description'] = courses['Description'].fillna('')
 tfidf = TfidfVectorizer(stop_words='english')
 tfidf_matrix = tfidf.fit_transform(courses['Description'])
 
