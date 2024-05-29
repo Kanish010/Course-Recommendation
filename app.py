@@ -5,23 +5,50 @@ from sklearn.metrics.pairwise import linear_kernel
 
 app = Flask(__name__)
 
-# Load and preprocess data
-courses = pd.read_excel('courses.xlsx')
-courses['Description'] = courses['Description'].fillna('')
-tfidf = TfidfVectorizer(stop_words='english')
-tfidf_matrix = tfidf.fit_transform(courses['Description'])
+# Load course data from Excel
+def load_course_data(filepath):
+    return pd.read_excel(filepath)
+
+# Preprocess the course data
+def preprocess_courses(courses):
+    courses['Description'] = courses['Description'].fillna('')
+    tfidf = TfidfVectorizer(stop_words='english')
+    tfidf_matrix = tfidf.fit_transform(courses['Description'])
+    return tfidf, tfidf_matrix
+
+# Get content-based recommendations
+def get_content_based_recommendations(field_of_interest, courses, tfidf, tfidf_matrix):
+    # Transform the field of interest using the same TF-IDF vectorizer
+    interest_vector = tfidf.transform([field_of_interest])
+    
+    # Compute similarity scores between the interest vector and course descriptions
+    sim_scores = linear_kernel(interest_vector, tfidf_matrix).flatten()
+    
+    # Get indices of the top 10 most similar courses
+    similar_indices = sim_scores.argsort()[-10:][::-1]
+    similar_courses = courses.iloc[similar_indices]
+    
+    # Filter courses based on relevance to the user's field of interest
+    relevant_courses = similar_courses[similar_courses.apply(lambda row: field_of_interest.lower() in row['Title'].lower() or field_of_interest.lower() in row['Description'].lower(), axis=1)]
+    
+    return relevant_courses
+
+# Initialize the data and model
+courses = load_course_data('courses.xlsx')
+tfidf, tfidf_matrix = preprocess_courses(courses)
 
 @app.route('/recommend', methods=['GET'])
 def recommend():
     field_of_interest = request.args.get('field_of_interest')
-    interest_vector = tfidf.transform([field_of_interest])
-    sim_scores = linear_kernel(interest_vector, tfidf_matrix).flatten()
-    similar_indices = sim_scores.argsort()[-10:][::-1]
-    similar_courses = courses.iloc[similar_indices]
-    relevant_courses = similar_courses[similar_courses.apply(
-        lambda row: field_of_interest.lower() in row['title'].lower() or field_of_interest.lower() in row['Description'].lower(), axis=1)]
+    if not field_of_interest:
+        return jsonify({'error': 'field_of_interest parameter is required'}), 400
     
-    return jsonify(relevant_courses[['Title', 'Description']].to_dict(orient='records'))
+    content_recommendations = get_content_based_recommendations(field_of_interest, courses, tfidf, tfidf_matrix)
+    
+    if not content_recommendations.empty:
+        return jsonify(content_recommendations[['Title', 'Description']].to_dict(orient='records'))
+    else:
+        return jsonify({'message': 'No courses found for the given field of interest'})
 
 if __name__ == '__main__':
     app.run(debug=True)
