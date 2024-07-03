@@ -149,7 +149,7 @@ df = pd.DataFrame({
 }, dtype=str)
 
 # Save the DataFrame to a CSV file in the current working directory
-csv_file_path = 'ubc_okanagan_courses_filtered.csv'
+csv_file_path = 'ubc_okanagan_courses.csv'
 df.to_csv(csv_file_path, index=False)
 
 print(f"Data has been scraped and saved to {csv_file_path}")
