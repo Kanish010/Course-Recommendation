@@ -92,7 +92,7 @@ course_credits = []
 
 # Function to check if a line of text contains the credits
 def contains_credits(text):
-    return "(3)" in text or "(4)" in text or "(6)" in text
+    return "(3)" in text or "(4)" in text or "(6)" in text or "3-6" in text
 
 # Loop through each subject URL
 for url in subject_urls:
@@ -135,7 +135,7 @@ for url in subject_urls:
             # Append the data to lists
             course_ids.append(course_id)
             course_titles.append(course_title)
-            course_credits.append(credits)
+            course_credits.append(f"\t{credits}")
             course_descriptions.append(course_description)
         else:
             i += 1
