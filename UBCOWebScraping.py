@@ -2,93 +2,47 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 
-# List of URLs for each subject
-subject_urls = [
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/antho",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/apsco",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/artho",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/astro",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/bioco",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/biolo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/chemo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/chino",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/corho",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/cmpeo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/cosco",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/coopo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/ccso",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/crwro",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/culto",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/custo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/datao",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/diceo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/dihuo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/ecedo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/eesco",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/econo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/educo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/edllo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/eadmo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/epseo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/edsto",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/eteco",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/engro",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/englo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/eapo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/excho",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/filmo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/fdsyo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/freno",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/fwsco",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/gwsto",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/geogo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/gisco",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/germo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/heso",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/healo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/hinto",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/hebro",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/histo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/imtco",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/inlgo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/indgo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/igso",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/jpsto",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/korno",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/lledo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/latno",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/mgmto",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/mgcoo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/manfo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/matho",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/mdsto",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/musco",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/nleko",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/nsylo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/nrsgo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/philo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/physo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/polio",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/psyoo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/secho",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/socwo",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/socio",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/spano",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/stmco",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/stato",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/susto",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/thtro",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/vanto",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/visao",
-    "https://okanagan.calendar.ubc.ca/course-descriptions/subject/wrldo",
-    # Add all other subject URLs here
-]
+# List of course IDs and their full names
+course_id_mapping = {
+    "anth_o": "Anthropology", "apsc_o": "Applied Science", "arth_o": "Art History and Visual Culture", 
+    "astr_o": "Astronomy", "bioc_o": "Biochemistry", "biol_o": "Biology", "chem_o": "Chemistry", 
+    "chin_o": "Chinese", "corh_o": "Communications And Rhetoric", "cmpe_o": "Computer Engineering", 
+    "cosc_o": "Computer Science", "coop_o": "Cooperative Education", "ccs_o": "Creative and Critical Studies", 
+    "crwr_o": "Creative Writing", "cult_o": "Cultural Studies", "cust_o": "Curriculum Studies", 
+    "data_o": "Data Science", "dice_o": "Design, Innovation, Creativity, Entrepreneurship", 
+    "dihu_o": "Digital Humanities", "eced_o": "Early Childhood Education", "eesc_o": "Earth & Environmental Sciences", 
+    "econ_o": "Economics", "educ_o": "Education", "edll_o": "Education Doctorate Leadership and Learning", 
+    "eadm_o": "Educational Administration", "epse_o": "Educational Psychology and Special Education", 
+    "edst_o": "Educational Studies", "etec_o": "Educational Technology", "engr_o": "Engineering", 
+    "engl_o": "English", "eap_o": "English for Academic Purposes", "exch_o": "Exchange Programs", 
+    "film_o": "Film", "fdsy_o": "Food Systems", "fren_o": "French", "fwsc_o": "Freshwater Science", 
+    "gwst_o": "Gender and Women's Studies", "geog_o": "Geography", "gisc_o": "Geospatial Information Science", 
+    "germ_o": "German", "hes_o": "Health & Exercise Sciences", "heal_o": "Health Studies", 
+    "hint_o": "Health-Interprofessional", "hebr_o": "Hebrew", "hist_o": "History", 
+    "imtc_o": "Immersive Technologies", "inlg_o": "Indigenous Language", "indg_o": "Indigenous Studies", 
+    "igs_o": "Interdisciplinary Graduate Studies", "jpst_o": "Japanese Studies", "korn_o": "Korean", 
+    "lled_o": "Language and Literacy Education", "latn_o": "Latin", "mgmt_o": "Management", 
+    "mgco_o": "Management Co-Op", "manf_o": "Manufacturing Engineering", "math_o": "Mathematics", 
+    "mdst_o": "Media Studies", "musc_o": "Music", "nlek_o": "Nle?kepmx Language", "nsyl_o": "Nsyilxcn", 
+    "nrsg_o": "Nursing", "phil_o": "Philosophy", "phys_o": "Physics", "poli_o": "Political Science", 
+    "psyo_o": "Psychology", "sech_o": "Social and Economic Change", "socw_o": "Social Work", 
+    "soci_o": "Sociology", "span_o": "Spanish", "stmc_o": "St'�t'imc Language", "stat_o": "Statistics", 
+    "sust_o": "Sustainability", "thtr_o": "Theatre", "vant_o": "Vantage College", "visa_o": "Visual Arts", 
+    "wrld_o": "World Literature"
+}
+
+# Base URL for subjects
+base_url = "https://okanagan.calendar.ubc.ca/course-descriptions/subject/"
+
+# Generate subject URLs
+subject_urls = [base_url + course_id.replace("_", "") for course_id in course_id_mapping.keys()]
 
 # Lists to store the course data
-course_ids = []
+course_ids_list = []
 course_titles = []
 course_descriptions = []
 course_credits = []
+course_full_names = []
 
 # Function to check if a line of text contains the credits
 def contains_credits(text):
@@ -133,16 +87,23 @@ for url in subject_urls:
             course_description = " ".join(description_lines).strip()
             
             # Append the data to lists
-            course_ids.append(course_id)
+            course_ids_list.append(course_id.upper())  # Ensure course IDs are in uppercase
             course_titles.append(course_title)
             course_credits.append(f"\t{credits}")
             course_descriptions.append(course_description)
+            
+            # Determine the full name for the current course ID
+            for key, value in course_id_mapping.items():
+                if key.replace("_", "") in url:
+                    course_full_names.append(value)
+                    break
         else:
             i += 1
 
 # Create a DataFrame from the lists
 df = pd.DataFrame({
-    'Course ID': course_ids,
+    'Subject': course_full_names,
+    'Course ID': course_ids_list,
     'Course Title': course_titles,
     'Course Description': course_descriptions,
     'Credits': course_credits
