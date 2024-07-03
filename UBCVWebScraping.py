@@ -6,6 +6,25 @@ import pandas as pd
 # List of URLs for each subject
 subject_urls = [
     "https://vancouver.calendar.ubc.ca/course-descriptions/subject/adhev",
+    "https://vancouver.calendar.ubc.ca/course-descriptions/subject/afstv",
+    "https://vancouver.calendar.ubc.ca/course-descriptions/subject/agecv",
+    "https://vancouver.calendar.ubc.ca/course-descriptions/subject/aslv",
+    "https://vancouver.calendar.ubc.ca/course-descriptions/subject/anatv",
+    "https://vancouver.calendar.ubc.ca/course-descriptions/subject/amnev",
+    "https://vancouver.calendar.ubc.ca/course-descriptions/subject/arclv",
+    "https://vancouver.calendar.ubc.ca/course-descriptions/subject/anthv",
+    "https://vancouver.calendar.ubc.ca/course-descriptions/subject/aanbv",
+    "https://vancouver.calendar.ubc.ca/course-descriptions/subject/apbiv",
+    "https://vancouver.calendar.ubc.ca/course-descriptions/subject/apscv",
+    "https://vancouver.calendar.ubc.ca/course-descriptions/subject/apppv",
+    "https://vancouver.calendar.ubc.ca/course-descriptions/subject/aquav",
+    "https://vancouver.calendar.ubc.ca/course-descriptions/subject/archv",
+    "https://vancouver.calendar.ubc.ca/course-descriptions/subject/arstv",
+    "https://vancouver.calendar.ubc.ca/course-descriptions/subject/arthv",
+    "https://vancouver.calendar.ubc.ca/course-descriptions/subject/asicv",
+    "https://vancouver.calendar.ubc.ca/course-descriptions/subject/artcv",
+    "https://vancouver.calendar.ubc.ca/course-descriptions/subject/artsv",
+    
     # Add all other subject URLs here
 ]
 
@@ -74,7 +93,7 @@ df = pd.DataFrame({
 }, dtype=str)
 
 # Save the DataFrame to a CSV file in the current working directory
-csv_file_path = 'ubc_okanagan_courses_filtered.csv'
+csv_file_path = 'ubc_vancouver_courses.csv'
 df.to_csv(csv_file_path, index=False)
 
 print(f"Data has been scraped and saved to {csv_file_path}")
