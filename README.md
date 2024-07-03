@@ -1,1 +1,1 @@
-# NLP-Course-Recommendation
+# Course Recommendation LLM
