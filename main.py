@@ -2,8 +2,8 @@ import pandas as pd
 import re
 
 # Load the CSV files for both campuses
-okanagan_file_path = 'CourseData/ubc_okanagan_courses.csv'
-vancouver_file_path = 'CourseData/ubc_vancouver_courses.csv'
+okanagan_file_path = 'ubc_okanagan_courses.csv'
+vancouver_file_path = 'ubc_vancouver_courses.csv'
 
 okanagan_courses = pd.read_csv(okanagan_file_path)
 vancouver_courses = pd.read_csv(vancouver_file_path)
@@ -65,13 +65,25 @@ def main():
             print("Invalid campus selection. Please enter 'Okanagan' or 'Vancouver'.")
     
     # Step 2: Get user interests
-    user_interest = input("Please describe your area of interest: ").strip()
+    while True:
+        user_interest = input("Please describe your area of interest: ").strip()
+        if user_interest:
+            break
+        else:
+            print("You did not provide an area of interest. Please try again.")
     
     # Step 3: Get user course level preference
-    user_levels = input("Which course levels are you interested in? (e.g., 100, 200, leave blank for all levels): ").strip()
-    
-    # Parse the levels input and convert to string, ensuring no extra spaces
-    levels = [level.strip() for level in user_levels.split(',')] if user_levels else []
+    while True:
+        user_levels_input = input("Which course levels are you interested in? (e.g., 100, 200, leave blank for all levels): ").strip()
+        if user_levels_input:
+            try:
+                levels = [str(int(level.strip())) for level in user_levels_input.split(',')]
+                break
+            except ValueError:
+                print("Invalid format for course levels. Please enter numbers separated by commas (e.g., 100, 200).")
+        else:
+            levels = []
+            break
     
     # Filter courses based on user input
     recommended_courses = filter_courses(course_data, user_interest, levels)
@@ -79,9 +91,17 @@ def main():
     # Display the results without the 'Level' column and index
     if not recommended_courses.empty:
         print("\nRecommended courses for you:")
-        print(recommended_courses[['Course Title', 'Course ID', 'Course Description', 'Credits']].to_string(index=False))
+        print(recommended_courses[['Course Title', 'Course ID']].to_string(index=False))
     else:
-        print("\nNo courses found matching your criteria.")
+        # Specific error messages based on user input
+        if levels and user_interest:
+            print(f"\nNo {', '.join(levels)} level courses related to '{user_interest}' were found.")
+        elif levels:
+            print(f"\nNo courses found at {', '.join(levels)} level.")
+        elif user_interest:
+            print(f"\nNo courses found related to '{user_interest}'.")
+        else:
+            print("\nNo courses found matching your criteria.")
         
 # Run the main function
 if __name__ == "__main__":
