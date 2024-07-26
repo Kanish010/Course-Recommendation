@@ -15,7 +15,7 @@ def extract_and_categorize_level(course_id):
     if match:
         level = int(match.group(1))
         # Determine the broad category by integer division
-        if 100 <= level < 500:
+        if 100 <= level <= 599:
             return str((level // 100) * 100)
         else:
             return 'Other'
@@ -77,8 +77,11 @@ def main():
         user_levels_input = input("Which course levels are you interested in? (e.g., 100, 200, leave blank for all levels): ").strip().replace(" ", "")
         if user_levels_input:
             try:
-                levels = [str(int(level.replace(" ", ""))) for level in user_levels_input.split(',')]
-                break
+                levels = [str(int(level)) for level in user_levels_input.split(',') if 100 <= int(level) <= 599]
+                if levels:
+                    break
+                else:
+                    print("Please enter valid course levels between 100 and 599.")
             except ValueError:
                 print("Invalid format for course levels. Please enter numbers separated by commas (e.g., 100, 200).")
         else:
