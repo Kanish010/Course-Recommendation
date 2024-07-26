@@ -2,8 +2,8 @@ import pandas as pd
 import re
 
 # Load the CSV files for both campuses
-okanagan_file_path = 'ubc_okanagan_courses.csv'
-vancouver_file_path = 'ubc_vancouver_courses.csv'
+okanagan_file_path = 'CourseData/ubc_okanagan_courses.csv'
+vancouver_file_path = 'CourseData/ubc_vancouver_courses.csv'
 
 okanagan_courses = pd.read_csv(okanagan_file_path)
 vancouver_courses = pd.read_csv(vancouver_file_path)
