@@ -54,7 +54,7 @@ def filter_courses(data, interest, levels):
 def main():
     # Step 1: Ask for campus preference in a loop until valid input is received
     while True:
-        campus = input("Which campus are you interested in? (Okanagan/Vancouver): ").strip().lower()
+        campus = input("Which campus are you interested in? (Okanagan/Vancouver): ").strip().lower().replace(" ", "")
         if campus == 'okanagan':
             course_data = okanagan_courses
             break
@@ -74,10 +74,10 @@ def main():
     
     # Step 3: Get user course level preference
     while True:
-        user_levels_input = input("Which course levels are you interested in? (e.g., 100, 200, leave blank for all levels): ").strip()
+        user_levels_input = input("Which course levels are you interested in? (e.g., 100, 200, leave blank for all levels): ").strip().replace(" ", "")
         if user_levels_input:
             try:
-                levels = [str(int(level.strip())) for level in user_levels_input.split(',')]
+                levels = [str(int(level.replace(" ", ""))) for level in user_levels_input.split(',')]
                 break
             except ValueError:
                 print("Invalid format for course levels. Please enter numbers separated by commas (e.g., 100, 200).")
