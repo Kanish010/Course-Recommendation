@@ -7,8 +7,8 @@ def main():
         # Prompt for user credentials
         action = input("Do you want to [R]egister or [L]ogin? (E to Exit) ").strip().lower()
         if action == 'r':
-            username = input("Enter a username: ").strip()
-            email = input("Enter your email: ").strip()
+            username = input("Enter a username: ").strip().lower()
+            email = input("Enter your email: ").strip().lower()
             password = input("Enter a password: ").strip()
             
             user_id = register_user(username, email, password)
@@ -16,7 +16,7 @@ def main():
                 continue
             print(f"User {username} registered successfully")
         elif action == 'l':
-            username = input("Enter your username: ").strip()
+            username = input("Enter your username: ").strip().lower()
             password = input("Enter your password: ").strip()
             
             user_id = authenticate_user(username, password)
