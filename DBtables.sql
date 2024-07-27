@@ -7,10 +7,10 @@ CREATE TABLE Users (
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE UserPreferences (
+CREATE TABLE UserLastSearch (
     user_id INT PRIMARY KEY,
     preferred_levels VARCHAR(50),
     interests TEXT,
@@ -25,6 +25,14 @@ CREATE TABLE UserSearchHistory (
     search_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     result_count INT,
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
+CREATE TABLE RecommendedCourses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    search_id INT,
+    course_title VARCHAR(255),
+    course_id VARCHAR(50),
+    FOREIGN KEY (search_id) REFERENCES UserSearchHistory(search_id)
 );
 
 CREATE TABLE Courses (
