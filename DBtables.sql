@@ -1,7 +1,8 @@
 CREATE DATABASE IF NOT EXISTS CourseRecommendationDB;
 USE CourseRecommendationDB;
 
-CREATE TABLE Users (
+-- Users Table
+CREATE TABLE IF NOT EXISTS Users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
@@ -10,7 +11,8 @@ CREATE TABLE Users (
     last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE UserLastSearch (
+-- UserLastSearch Table
+CREATE TABLE IF NOT EXISTS UserLastSearch (
     user_id INT PRIMARY KEY,
     preferred_levels VARCHAR(50),
     interests TEXT,
@@ -18,7 +20,8 @@ CREATE TABLE UserLastSearch (
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
-CREATE TABLE UserSearchHistory (
+-- UserSearchHistory Table
+CREATE TABLE IF NOT EXISTS UserSearchHistory (
     search_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
     search_query VARCHAR(255),
@@ -27,15 +30,18 @@ CREATE TABLE UserSearchHistory (
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
-CREATE TABLE RecommendedCourses (
+-- RecommendedCourses Table
+CREATE TABLE IF NOT EXISTS RecommendedCourses (
     id INT AUTO_INCREMENT PRIMARY KEY,
     search_id INT,
     course_title VARCHAR(255),
     course_id VARCHAR(50),
+    campus VARCHAR(50),
     FOREIGN KEY (search_id) REFERENCES UserSearchHistory(search_id)
 );
 
-CREATE TABLE Courses (
+-- Courses Table
+CREATE TABLE IF NOT EXISTS Courses (
     course_id INT AUTO_INCREMENT PRIMARY KEY,
     course_code VARCHAR(20) UNIQUE NOT NULL,
     course_title VARCHAR(255) NOT NULL,
@@ -45,4 +51,22 @@ CREATE TABLE Courses (
     campus VARCHAR(50),
     department VARCHAR(100),
     professor VARCHAR(100)
+);
+
+-- UserPreferences Table
+CREATE TABLE IF NOT EXISTS UserPreferences (
+    user_id INT PRIMARY KEY,
+    preferred_levels VARCHAR(50),
+    interests TEXT,
+    preferred_campus VARCHAR(50),
+    notifications_enabled BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
+-- FavoriteCourses Table
+CREATE TABLE IF NOT EXISTS FavoriteCourses (
+    user_id INT,
+    course_id VARCHAR(50),
+    PRIMARY KEY (user_id, course_id),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
