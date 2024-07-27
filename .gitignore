@@ -1,0 +1,12 @@
+# Ignore environment variable files
+.env
+
+# Ignore credentials files
+credentials.py
+
+# Ignore compiled Python files
+__pycache__/
+*.py[cod]
+
+# Ignore virtual environment
+venv/
