@@ -23,8 +23,8 @@ all_courses['Campus'].fillna('Unknown', inplace=True)
 # Establish database connection
 db = mysql.connector.connect(
     host="localhost",
-    user="root",
-    password="5g6JVu32Dj",
+    user="username",
+    password="password",
     database="CourseRecommendationDB"
 )
 
