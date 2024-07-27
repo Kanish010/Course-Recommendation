@@ -6,22 +6,102 @@ def main_menu(user_id):
     while True:
         print("\nMenu:")
         print("1. Perform a new search")
-        print("2. View previous searches")
+        print("2. View and Manage Search History")
         print("3. Set or update preferences")
-        print("4. Logout")
-        choice = input("Please select an option (1, 2, 3, 4): ").strip()
+        print("4. Manage Favorites")
+        print("5. Logout")
+        choice = input("Please select an option (1-5): ").strip()
         
         if choice == '1':
             new_search(user_id)
         elif choice == '2':
-            view_previous_searches(user_id)
+            manage_search_history(user_id)
         elif choice == '3':
             set_user_preferences(user_id)
         elif choice == '4':
+            manage_favorites(user_id)
+        elif choice == '5':
             print("Logging out...")
             break
         else:
             print("Invalid choice. Please select a valid option.")
+
+def manage_favorites(user_id):
+    while True:
+        print("\nManage Favorites:")
+        print("1. View favorite courses")
+        print("2. Add a course to favorites")
+        print("3. Remove a course from favorites")
+        print("4. Back to main menu")
+        choice = input("Please select an option (1-4): ").strip()
+        
+        if choice == '1':
+            view_favorites(user_id)
+        elif choice == '2':
+            add_to_favorites(user_id)
+        elif choice == '3':
+            remove_from_favorites(user_id)
+        elif choice == '4':
+            break
+        else:
+            print("Invalid choice. Please select a valid option.")
+
+def view_favorites(user_id):
+    db = create_connection()
+    cursor = db.cursor()
+    cursor.execute("""
+        SELECT `Courses`.`Course ID`, `Courses`.`Course Title`, `Courses`.`Campus`
+        FROM FavoriteCourses
+        JOIN Courses ON FavoriteCourses.course_id = Courses.`Course ID`
+        WHERE FavoriteCourses.user_id = %s
+    """, (user_id,))
+    favorites = cursor.fetchall()
+    
+    if favorites:
+        print("\nYour Favorite Courses:")
+        for course in favorites:
+            print(f"{course[0]}: {course[1]} (Campus: {course[2]})")
+    else:
+        print("You have no favorite courses.")
+    close_connection(db)
+
+def add_to_favorites(user_id):
+    print("Please enter the Course ID in the format 'MGMT_O 450'.")
+    course_id = input("Enter the Course ID of the course you want to add to favorites: ").strip()
+    
+    db = create_connection()
+    cursor = db.cursor()
+    cursor.execute("SELECT `Course ID` FROM Courses WHERE `Course ID` = %s", (course_id,))
+    course = cursor.fetchone()
+    
+    if course:
+        cursor.execute("""
+            INSERT INTO FavoriteCourses (user_id, course_id)
+            VALUES (%s, %s)
+        """, (user_id, course_id))
+        db.commit()
+        print(f"Course {course_id} has been added to your favorites.")
+    else:
+        print("Invalid Course ID. Please try again.")
+    close_connection(db)
+
+def remove_from_favorites(user_id):
+    print("Please enter the Course ID in the format 'MGMT_O 450'.")
+    course_id = input("Enter the Course ID of the course you want to remove from favorites: ").strip()
+    
+    db = create_connection()
+    cursor = db.cursor()
+    cursor.execute("""
+        DELETE FROM FavoriteCourses
+        WHERE user_id = %s AND course_id = %s
+    """, (user_id, course_id))
+    db.commit()
+    
+    if cursor.rowcount > 0:
+        print(f"Course {course_id} has been removed from your favorites.")
+    else:
+        print("Course not found in your favorites. Please check the Course ID and try again.")
+    close_connection(db)
 
 def new_search(user_id):
     campus = input("Which campus are you interested in? (Okanagan/Vancouver): ").strip().lower().replace(" ", "")
@@ -54,7 +134,6 @@ def perform_search(user_id, campus, user_interest, levels):
         ON DUPLICATE KEY UPDATE preferred_levels=%s, interests=%s, preferred_campus=%s
     """, (user_id, levels_str, user_interest, campus, levels_str, user_interest, campus))
     db.commit()
-
     recommended_courses = recommend_courses(cursor, campus, user_interest, levels)
     
     result_count = len(recommended_courses) if recommended_courses else 0
@@ -80,6 +159,23 @@ def perform_search(user_id, campus, user_interest, levels):
 
     close_connection(db)
 
+def manage_search_history(user_id):
+    while True:
+        print("\nManage Search History:")
+        print("1. View previous searches")
+        print("2. Clear entire search history")
+        print("3. Back to main menu")
+        choice = input("Please select an option (1-3): ").strip()
+        
+        if choice == '1':
+            view_previous_searches(user_id)
+        elif choice == '2':
+            clear_search_history(user_id)
+        elif choice == '3':
+            break
+        else:
+            print("Invalid choice. Please select a valid option.")
+
 def view_previous_searches(user_id):
     db = create_connection()
     if db is None:
@@ -88,7 +184,7 @@ def view_previous_searches(user_id):
 
     cursor = db.cursor()
     cursor.execute("""
-        SELECT search_id, search_query, result_count, search_date
+        SELECT search_query, result_count, search_date
         FROM UserSearchHistory
         WHERE user_id = %s
         ORDER BY search_date DESC
@@ -97,11 +193,10 @@ def view_previous_searches(user_id):
 
     if searches:
         print("\nPrevious Searches:")
-        for search in searches:
-            print(f"\nSearch Query: {search[1]}")
-            print(f"Results Found: {search[2]}")
-            print(f"Date: {search[3]}")
-
+        for index, search in enumerate(searches):
+            print(f"\n{index + 1}. Search Query: {search[0]}")
+            print(f"   Results Found: {search[1]}")
+            print(f"   Date: {search[2]}")
             cursor.execute("""
                 SELECT course_title, course_id, campus
                 FROM RecommendedCourses
@@ -110,15 +205,30 @@ def view_previous_searches(user_id):
             recommended_courses = cursor.fetchall()
 
             if recommended_courses:
-                print("Recommended Courses:")
+                print("   Recommended Courses:")
                 for course in recommended_courses:
-                    print(f"- {course[0]} (Course ID: {course[1]}, Campus: {course[2]})")
+                    print(f"   - {course[0]} (Course ID: {course[1]}, Campus: {course[2]})")
             else:
-                print("No recommended courses found for this search.")
+                print("   No recommended courses found for this search.")
     else:
         print("No previous searches found.")
 
     close_connection(db)
+
+def clear_search_history(user_id):
+    db = create_connection()
+    cursor = db.cursor()
+
+    # Delete all entries related to the user's search history
+    cursor.execute("""
+        DELETE FROM RecommendedCourses WHERE user_id = %s
+    """, (user_id,))
+    cursor.execute("""
+        DELETE FROM UserSearchHistory WHERE user_id = %s
+    """, (user_id,))
+    db.commit()
+    close_connection(db)
+    print("Your search history has been cleared.")
 
 def set_user_preferences(user_id):
     preferred_levels_input = input("Enter your preferred course levels (e.g., 100, 200, 300, leave blank for all): ").strip()
