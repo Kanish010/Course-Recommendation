@@ -3,3 +3,4 @@ scikit-learn
 google-cloud-translate
 mysql-connector-python
 python-dotenv
+openai
