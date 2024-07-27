@@ -14,16 +14,23 @@ def register_user(username, email, password):
         cursor = connection.cursor()
         hashed_password = hash_password(password)
         try:
+            # Check if username or email already exists
+            cursor.execute("SELECT user_id FROM Users WHERE username = %s OR email = %s", (username, email))
+            if cursor.fetchone():
+                print("Error: Username or email already exists.")
+                return None
+            
             cursor.execute(
                 "INSERT INTO Users (username, email, password_hash) VALUES (%s, %s, %s)",
                 (username, email, hashed_password)
             )
             user_id = cursor.lastrowid
-            # No need to insert into UserPreferences explicitly here since it's handled in main.py
             connection.commit()
             print("User registered successfully")
+            return user_id
         except Error as e:
-            print(f"Error: {e}")
+            print(f"Database Error: {e}")
+            return None
         finally:
             cursor.close()
             close_connection(connection)
@@ -39,10 +46,11 @@ def authenticate_user(username, password):
                 print("User authenticated successfully")
                 return record[0]  # Return the user_id
             else:
-                print("Authentication failed")
+                print("Error: Invalid username or password.")
                 return None
         except Error as e:
-            print(f"Error: {e}")
+            print(f"Database Error: {e}")
+            return None
         finally:
             cursor.close()
             close_connection(connection)
