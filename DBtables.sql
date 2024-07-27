@@ -31,13 +31,13 @@ CREATE TABLE IF NOT EXISTS UserSearchHistory (
 );
 
 -- RecommendedCourses Table
-CREATE TABLE IF NOT EXISTS RecommendedCourses (
+CREATE TABLE RecommendedCourses (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    search_id INT,
+    user_id INT,
     course_title VARCHAR(255),
     course_id VARCHAR(50),
     campus VARCHAR(50),
-    FOREIGN KEY (search_id) REFERENCES UserSearchHistory(search_id)
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
 -- Courses Table
