@@ -1,20 +1,18 @@
 import mysql.connector
-from mysql.connector import Error
+from dotenv import load_dotenv
 import os
 
+# Load environment variables from .env file
+load_dotenv()
+
 def create_connection():
-    try:
-        connection = mysql.connector.connect(
-            host='localhost',
-            database='CourseRecommendationDB',
-            user=os.getenv('DB_USER', 'username'),
-            password=os.getenv('DB_PASSWORD', 'password')
-        )
-        return connection
-    except Error as e:
-        print(f"Database Connection Error: {e}")
-        return None
+    return mysql.connector.connect(
+        host=os.getenv('DB_HOST'),
+        user=os.getenv('DB_USER'),
+        password=os.getenv('DB_PASSWORD'),
+        database=os.getenv('DB_NAME')
+    )
 
 def close_connection(connection):
-    if connection and connection.is_connected():
+    if connection:
         connection.close()
