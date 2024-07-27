@@ -83,7 +83,7 @@ def main():
     
     if not recommended_courses.empty:
         print("\nRecommended courses for you:")
-        print(recommended_courses[['Course Title', 'Course ID', 'Course Description', 'Credits']].to_string(index=False))
+        print(recommended_courses[['Course Title', 'Course ID']].to_string(index=False))
     else:
         if levels and user_interest:
             print(f"\nNo {', '.join(levels)} level courses related to '{user_interest}' were found.")
