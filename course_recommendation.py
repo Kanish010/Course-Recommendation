@@ -1,50 +1,32 @@
-import pandas as pd
+import mysql.connector
+from database import create_connection, close_connection
 import re
 
-# Load the CSV files for both campuses
-okanagan_file_path = 'CourseData/ubc_okanagan_courses.csv'
-vancouver_file_path = 'CourseData/ubc_vancouver_courses.csv'
-
-okanagan_courses = pd.read_csv(okanagan_file_path)
-vancouver_courses = pd.read_csv(vancouver_file_path)
-
-# Function to extract and categorize course level from the 'Course ID'
-def extract_and_categorize_level(course_id):
-    match = re.search(r'(\d{3})$', course_id)
-    if match:
-        level = int(match.group(1))
-        if 100 <= level <= 799:
-            return str((level // 100) * 100)
-    return 'Other'
-
-# Prepare the courses DataFrame by extracting course levels
-def prepare_courses(courses_df):
-    courses_df['Level'] = courses_df['Course ID'].apply(extract_and_categorize_level)
-    return courses_df
-
-okanagan_courses = prepare_courses(okanagan_courses)
-vancouver_courses = prepare_courses(vancouver_courses)
-
-# Filter courses based on interest and levels
-def filter_courses(data, interest, levels):
-    interest_filtered = data[
-        data['Course Description'].str.contains(interest, case=False, na=False) |
-        data['Course Title'].str.contains(interest, case=False, na=False)
-    ]
+def recommend_courses(cursor, campus, interest, levels):
+    # Base query
+    base_query = """
+    SELECT `Course ID`, `Course Title`
+    FROM Courses
+    WHERE Campus = %s AND
+    (`Course Description` LIKE %s OR `Course Title` LIKE %s)
+    """
     
-    if levels:
-        interest_filtered = interest_filtered[interest_filtered['Level'].isin(levels)]
-    
-    return interest_filtered.sort_values(by='Level')
+    params = [campus, f"%{interest}%", f"%{interest}%"]
 
-# Function to recommend courses based on user input
-def recommend_courses(campus, interest, levels):
-    if campus == 'okanagan':
-        course_data = okanagan_courses
-    elif campus == 'vancouver':
-        course_data = vancouver_courses
-    else:
-        raise ValueError("Invalid campus selection.")
-    
-    recommended_courses = filter_courses(course_data, interest, levels)
-    return recommended_courses[['Course Title', 'Course ID']]
+    # Handle levels filtering
+    if levels and levels[0] != "All Levels":
+        level_conditions = []
+        for level in levels:
+            if level.isdigit():
+                level_range_start = int(level)
+                level_range_end = level_range_start + 99
+                # Extract the numeric part of `Course ID` and filter by level range
+                level_conditions.append(f"""
+                CAST(SUBSTRING_INDEX(SUBSTRING(`Course ID`, LENGTH(`Course ID`) - 3), ' ', -1) AS UNSIGNED) BETWEEN {level_range_start} AND {level_range_end}
+                """)
+        
+        if level_conditions:
+            base_query += " AND (" + " OR ".join(level_conditions) + ")"
+
+    cursor.execute(base_query, params)
+    return cursor.fetchall()
