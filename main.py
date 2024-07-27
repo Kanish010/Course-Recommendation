@@ -58,8 +58,10 @@ def main():
             print("\nMenu:")
             print("1. Perform a new search")
             print("2. View previous searches")
-            print("3. Logout")
-            choice = input("Please select an option (1, 2, 3): ").strip()
+            print("3. View favorite courses")
+            print("4. Set or update preferences")
+            print("5. Logout")
+            choice = input("Please select an option (1, 2, 3, 4, 5): ").strip()
             
             if choice == '1':
                 # Prompt for new search criteria
@@ -85,6 +87,14 @@ def main():
                 view_previous_searches(user_id)
 
             elif choice == '3':
+                # View favorite courses
+                view_favorite_courses(user_id)
+
+            elif choice == '4':
+                # Set or update preferences
+                set_user_preferences(user_id)
+
+            elif choice == '5':
                 print("Logging out...")
                 break
 
@@ -129,9 +139,9 @@ def perform_search(user_id, campus, user_interest, levels):
     # Log recommended courses
     for _, row in recommended_courses.iterrows():
         cursor.execute("""
-            INSERT INTO RecommendedCourses (search_id, course_title, course_id)
-            VALUES (%s, %s, %s)
-        """, (search_id, row['Course Title'], row['Course ID']))
+            INSERT INTO RecommendedCourses (search_id, course_title, course_id, campus)
+            VALUES (%s, %s, %s, %s)
+        """, (search_id, row['Course Title'], row['Course ID'], campus))
     db.commit()
 
     close_connection(db)
@@ -177,6 +187,40 @@ def view_previous_searches(user_id):
         print("No previous searches found.")
 
     close_connection(db)
+
+def view_favorite_courses(user_id):
+    db = create_connection()
+    cursor = db.cursor()
+    cursor.execute("""
+        SELECT course_id FROM FavoriteCourses
+        WHERE user_id = %s
+    """, (user_id,))
+    favorite_courses = cursor.fetchall()
+    close_connection(db)
+    
+    if favorite_courses:
+        print("\nFavorite Courses:")
+        for course in favorite_courses:
+            print(f"Course ID: {course[0]}")
+    else:
+        print("No favorite courses found.")
+
+def set_user_preferences(user_id):
+    preferred_levels_input = input("Enter your preferred course levels (e.g., 100, 200, 300, leave blank for all): ").strip()
+    preferred_levels = preferred_levels_input if preferred_levels_input else "All Levels"
+    interests = input("Enter your interests (comma separated): ").strip()
+    preferred_campus = input("Enter your preferred campus (Okanagan/Vancouver): ").strip()
+
+    db = create_connection()
+    cursor = db.cursor()
+    cursor.execute("""
+        INSERT INTO UserPreferences (user_id, preferred_levels, interests, preferred_campus)
+        VALUES (%s, %s, %s, %s)
+        ON DUPLICATE KEY UPDATE preferred_levels=%s, interests=%s, preferred_campus=%s
+    """, (user_id, preferred_levels, interests, preferred_campus, preferred_levels, interests, preferred_campus))
+    db.commit()
+    close_connection(db)
+    print("Preferences updated successfully.")
 
 if __name__ == "__main__":
     main()
