@@ -18,6 +18,8 @@ def register_user(username, email, password):
                 "INSERT INTO Users (username, email, password_hash) VALUES (%s, %s, %s)",
                 (username, email, hashed_password)
             )
+            user_id = cursor.lastrowid
+            # No need to insert into UserPreferences explicitly here since it's handled in main.py
             connection.commit()
             print("User registered successfully")
         except Error as e:
@@ -31,14 +33,14 @@ def authenticate_user(username, password):
     if connection:
         cursor = connection.cursor()
         try:
-            cursor.execute("SELECT password_hash FROM Users WHERE username = %s", (username,))
+            cursor.execute("SELECT user_id, password_hash FROM Users WHERE username = %s", (username,))
             record = cursor.fetchone()
-            if record and verify_password(password, record[0]):
+            if record and verify_password(password, record[1]):
                 print("User authenticated successfully")
-                return True
+                return record[0]  # Return the user_id
             else:
                 print("Authentication failed")
-                return False
+                return None
         except Error as e:
             print(f"Error: {e}")
         finally:
