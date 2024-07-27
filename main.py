@@ -15,20 +15,17 @@ def extract_and_categorize_level(course_id):
         level = int(match.group(1))
         if 100 <= level <= 799:
             return str((level // 100) * 100)
-        else:
-            return 'Other'
-    return 'Unknown'
+    return 'Other'
 
-# Function to prepare the courses DataFrame
+# Prepare the courses DataFrame by extracting course levels
 def prepare_courses(courses_df):
     courses_df['Level'] = courses_df['Course ID'].apply(extract_and_categorize_level)
     return courses_df
 
-# Prepare both course DataFrames
 okanagan_courses = prepare_courses(okanagan_courses)
 vancouver_courses = prepare_courses(vancouver_courses)
 
-# Function to filter courses based on interest and levels
+# Filter courses based on interest and levels
 def filter_courses(data, interest, levels):
     interest_filtered = data[
         data['Course Description'].str.contains(interest, case=False, na=False) |
@@ -36,14 +33,9 @@ def filter_courses(data, interest, levels):
     ]
     
     if levels:
-        level_filtered = interest_filtered[interest_filtered['Level'].isin(levels)]
-    else:
-        level_filtered = interest_filtered
+        interest_filtered = interest_filtered[interest_filtered['Level'].isin(levels)]
     
-    level_filtered['Numeric Level'] = level_filtered['Level'].apply(lambda x: int(x) if x.isdigit() else 999)
-    level_filtered = level_filtered.sort_values(by='Numeric Level')
-    
-    return level_filtered
+    return interest_filtered.sort_values(by='Level')
 
 # Main function to interact with the user
 def main():
@@ -60,12 +52,10 @@ def main():
         else:
             print("Invalid campus selection. Please enter 'Okanagan' or 'Vancouver'.")
     
-    while True:
-        user_interest = input("Please describe your area of interest: ").strip()
-        if user_interest:
-            break
-        else:
-            print("You did not provide an area of interest. Please try again.")
+    user_interest = input("Please describe your area of interest: ").strip()
+    if not user_interest:
+        print("You did not provide an area of interest.")
+        return
     
     while True:
         user_levels_input = input("Which course levels are you interested in? (100, 200, ..., 700, leave blank for all levels): ").strip().replace(" ", "")
@@ -85,14 +75,7 @@ def main():
         print("\nRecommended courses for you:")
         print(recommended_courses[['Course Title', 'Course ID']].to_string(index=False))
     else:
-        if levels and user_interest:
-            print(f"\nNo {', '.join(levels)} level courses related to '{user_interest}' were found.")
-        elif levels:
-            print(f"\nNo courses found at {', '.join(levels)} level.")
-        elif user_interest:
-            print(f"\nNo courses found related to '{user_interest}'.")
-        else:
-            print("\nNo courses found matching your criteria.")
+        print(f"\nNo {', '.join(levels)} level courses with interest '{user_interest}' were found.")
         
 # Run the main function
 if __name__ == "__main__":
