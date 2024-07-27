@@ -1,8 +1,7 @@
 # Ignore environment variable files
 .env
-
-# Ignore credentials files
 credentials.py
+config.py
 
 # Ignore compiled Python files
 __pycache__/
