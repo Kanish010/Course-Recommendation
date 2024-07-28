@@ -66,7 +66,7 @@ def view_favorites(user_id):
     close_connection(db)
 
 def add_to_favorites(user_id):
-    print("Please enter the Course ID in the format 'MGMT_O 450'.")
+    print("Please enter the Course ID in the format 'MGMT_O 450' for Okanagan or 'CPSC_V 322' for Vancouver.")
     course_id = input("Enter the Course ID of the course you want to add to favorites: ").strip()
     
     db = create_connection()
@@ -86,7 +86,7 @@ def add_to_favorites(user_id):
     close_connection(db)
 
 def remove_from_favorites(user_id):
-    print("Please enter the Course ID in the format 'MGMT_O 450'.")
+    print("Please enter the Course ID in the format 'MGMT_O 450' for Okanagan or 'CPSC_V 322' for Vancouver.")
     course_id = input("Enter the Course ID of the course you want to remove from favorites: ").strip()
     
     db = create_connection()
