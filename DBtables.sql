@@ -70,3 +70,15 @@ CREATE TABLE IF NOT EXISTS FavoriteCourses (
     PRIMARY KEY (user_id, course_id),
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
+
+-- CourseRatings Table
+CREATE TABLE CourseRatings (
+    rating_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    course_id VARCHAR(255) NOT NULL,
+    rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+    feedback TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    UNIQUE KEY unique_user_course (user_id, course_id(255))
+);
