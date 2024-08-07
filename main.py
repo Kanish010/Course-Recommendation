@@ -1,4 +1,4 @@
-from registration_login import handle_registration, handle_login
+from Features.registration_login import handle_registration, handle_login
 from Features.favorites import manage_favorites
 from Features.search import new_search, perform_search
 from Features.search_history import manage_search_history
