@@ -1,0 +1,61 @@
+.settings-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: url('/Users/kanishalluri/Desktop/Python/Github Projects/Course-Recommendation/Images/UBCO.jpeg') no-repeat center center;
+  background-size: cover;
+  text-align: center;
+  position: relative;
+}
+
+.settings-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+.settings-header h1 {
+  margin: 0;
+}
+
+.settings-header button {
+  padding: 5px 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.settings-header button:hover {
+  background-color: #0056b3;
+}
+
+.settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.settings-content button {
+  padding: 15px 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.settings-content button:hover {
+  background-color: #0056b3;
+}
