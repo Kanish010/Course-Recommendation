@@ -1,0 +1,103 @@
+.login-form-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  perspective: 1000px;
+}
+
+.card {
+  width: 100%;
+  height: 400px; /* Set a height to ensure both forms are centered within the card */
+  transition: transform 1s ease-in-out;
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+.card.flipped {
+  transform: rotateY(180deg);
+}
+
+.login-form, .register-form {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center content vertically */
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.login-form {
+  transform: rotateY(0deg);
+}
+
+.register-form {
+  transform: rotateY(180deg);
+}
+
+.login-form h2, .register-form h2 {
+  margin-bottom: 1rem;
+}
+
+.login-form p, .register-form p {
+  margin-bottom: 1rem;
+}
+
+.login-form form, .register-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-form input, .register-form input {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.login-form button, .register-form button {
+  padding: 0.5rem;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.login-form button:hover, .register-form button:hover {
+  background-color: rgba(0, 123, 255, 0.7); /* Blue translucent background on hover */
+}
+
+.login-form .toggle-button, .register-form .toggle-button {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: background-color 0.3s ease;
+}
+
+.login-form .toggle-button:hover, .register-form .toggle-button:hover {
+  background-color: rgba(0, 123, 255, 0.2); /* Blue translucent background on hover */
+  color: #0056b3;
+}

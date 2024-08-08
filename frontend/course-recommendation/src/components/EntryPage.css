@@ -1,0 +1,82 @@
+.entry-page {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.campus {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  font-size: 2.5rem; /* Increase font size */
+  font-weight: bold; /* Make text bold */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Add a slight shadow for better readability */
+  color: white; /* Default text color */
+  overflow: hidden;
+  transition: transform 0.3s ease; /* Smooth transition for scaling */
+}
+
+.campus:hover {
+  transform: scale(1.05); /* Slightly enlarge the campus section on hover */
+}
+
+.okanagan {
+  background: url('/Users/kanishalluri/Desktop/Python/Github Projects/Course-Recommendation/Images/UBCO.jpeg') no-repeat center center;
+  background-size: cover; /* Ensure the image covers the container */
+}
+
+.vancouver {
+  background: url('/Users/kanishalluri/Desktop/Python/Github Projects/Course-Recommendation/Images/UBCV.jpg') no-repeat center center;
+  background-size: cover; /* Ensure the image covers the container */
+}
+
+.campus-text {
+  position: relative;
+  z-index: 1;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.3s ease; /* Smooth transition for color and scaling */
+}
+
+.campus-text::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background-color: rgba(0, 0, 0, 0.7); /* Red background highlight */
+  border-radius: 15px; /* Rounded corners */
+  transition: width 0.4s ease, height 0.4s ease, top 0.4s ease, left 0.4s ease, border-radius 0.4s ease; /* Smooth transition */
+  z-index: -1;
+  transform: translate(-50%, -50%);
+}
+
+.campus-text:hover::before {
+  width: 100%;
+  height: 100%;
+  top: 50%;
+  left: 50%;
+  border-radius: 25px; /* Rounded corners on hover */
+}
+
+.campus-text:hover {
+  color: white; /* Ensure text color stays white on hover */
+  transform: scale(1.1); /* Slightly enlarge the text on hover */
+}
+
+.login-form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+}
