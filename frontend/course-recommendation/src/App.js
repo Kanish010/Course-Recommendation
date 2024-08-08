@@ -6,15 +6,10 @@ import './App.css';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [selectedCampus, setSelectedCampus] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
 
   const handleLogin = () => {
     setIsLoggedIn(true);
-  };
-
-  const handleCampusSelection = (campus) => {
-    setSelectedCampus(campus);
   };
 
   const handleSettings = () => {
@@ -33,11 +28,11 @@ function App() {
   return (
     <div className="App">
       {!isLoggedIn ? (
-        <EntryPage onLogin={handleLogin} onCampusSelect={handleCampusSelection} />
+        <EntryPage onLogin={handleLogin} />
       ) : showSettings ? (
         <Settings onClose={handleCloseSettings} onLogout={handleLogout} />
       ) : (
-        <CampusPage campus={selectedCampus} onSettings={handleSettings} />
+        <CampusPage onSettings={handleSettings} />
       )}
     </div>
   );

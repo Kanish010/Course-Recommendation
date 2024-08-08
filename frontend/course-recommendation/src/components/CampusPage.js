@@ -2,7 +2,7 @@ import React from 'react';
 import { FiSettings } from 'react-icons/fi';
 import './CampusPage.css';
 
-const CampusPage = ({ campus, onSettings }) => {
+const CampusPage = ({ onSettings }) => {
   return (
     <div className="choose-campus">
       <div className="settings-icon-container">
