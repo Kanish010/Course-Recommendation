@@ -1,9 +1,17 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import './Settings.css';
+import SearchHistoryModal from './SearchHistoryModal';
 
 const Settings = ({ onClose, onLogout, userId }) => {
-  const navigate = useNavigate();
+  const [showSearchHistory, setShowSearchHistory] = useState(false);
+
+  const handleViewSearchHistory = () => {
+    setShowSearchHistory(true);
+  };
+
+  const handleCloseSearchHistory = () => {
+    setShowSearchHistory(false);
+  };
 
   return (
     <div className="settings-page">
@@ -11,11 +19,13 @@ const Settings = ({ onClose, onLogout, userId }) => {
         <h1>SETTINGS</h1>
       </div>
       <div className="settings-content">
-        <button onClick={() => navigate('/search-history')}>View Search History</button>
-        {/* Other buttons */}
+        <button onClick={handleViewSearchHistory}>View Search History</button>
         <button onClick={onClose}>Close</button>
         <button onClick={onLogout}>Logout</button>
       </div>
+      {showSearchHistory && (
+        <SearchHistoryModal userId={userId} onClose={handleCloseSearchHistory} />
+      )}
     </div>
   );
 };

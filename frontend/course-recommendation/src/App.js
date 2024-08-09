@@ -6,11 +6,12 @@ import './App.css';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState(null); // Store userId after login
   const [showSettings, setShowSettings] = useState(false);
-  const [selectedCampus, setSelectedCampus] = useState(null);
 
-  const handleLogin = () => {
+  const handleLogin = (id) => {
     setIsLoggedIn(true);
+    setUserId(id); // Save userId
   };
 
   const handleSettings = () => {
@@ -23,22 +24,18 @@ function App() {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
+    setUserId(null); // Clear userId on logout
     setShowSettings(false);
-    setSelectedCampus(null);
-  };
-
-  const handleCampusSelection = (campus) => {
-    setSelectedCampus(campus);
   };
 
   return (
     <div className="App">
       {!isLoggedIn ? (
-        <EntryPage onLogin={handleLogin} onCampusSelect={handleCampusSelection} />
+        <EntryPage onLogin={handleLogin} />
       ) : showSettings ? (
-        <Settings onClose={handleCloseSettings} onLogout={handleLogout} />
+        <Settings onClose={handleCloseSettings} onLogout={handleLogout} userId={userId} />
       ) : (
-        <CampusPage campus={selectedCampus} onSettings={handleSettings} />
+        <CampusPage onSettings={handleSettings} />
       )}
     </div>
   );

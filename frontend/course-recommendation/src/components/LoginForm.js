@@ -14,7 +14,7 @@ const LoginForm = ({ onLogin }) => {
       try {
         const response = await axios.post('http://127.0.0.1:5000/api/register', { username, email, password });
         if (response.data.success) {
-          onLogin();
+          onLogin(response.data.user_id); // Pass user_id to onLogin
         } else {
           alert(response.data.message);
         }
@@ -26,7 +26,7 @@ const LoginForm = ({ onLogin }) => {
       try {
         const response = await axios.post('http://127.0.0.1:5000/api/login', { username, password });
         if (response.data.success) {
-          onLogin();
+          onLogin(response.data.user_id); // Pass user_id to onLogin
         } else {
           alert(response.data.message);
         }
