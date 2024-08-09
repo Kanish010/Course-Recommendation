@@ -7,6 +7,7 @@ import './App.css';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [selectedCampus, setSelectedCampus] = useState(null);
 
   const handleLogin = () => {
     setIsLoggedIn(true);
@@ -23,16 +24,21 @@ function App() {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setShowSettings(false);
+    setSelectedCampus(null);
+  };
+
+  const handleCampusSelection = (campus) => {
+    setSelectedCampus(campus);
   };
 
   return (
     <div className="App">
       {!isLoggedIn ? (
-        <EntryPage onLogin={handleLogin} />
+        <EntryPage onLogin={handleLogin} onCampusSelect={handleCampusSelection} />
       ) : showSettings ? (
         <Settings onClose={handleCloseSettings} onLogout={handleLogout} />
       ) : (
-        <CampusPage onSettings={handleSettings} />
+        <CampusPage campus={selectedCampus} onSettings={handleSettings} />
       )}
     </div>
   );
