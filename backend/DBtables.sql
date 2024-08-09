@@ -37,7 +37,9 @@ CREATE TABLE RecommendedCourses (
     course_title VARCHAR(255),
     course_id VARCHAR(50),
     campus VARCHAR(50),
-    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+    search_id INT,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (search_id) REFERENCES UserSearchHistory(search_id)
 );
 
 -- Courses Table
